@@ -30,16 +30,16 @@ try {
 
 const JWToption = {
     secretOrKey : process.env.JWT_SECRET,
-    jwtFromRequest : ExtractJWT.fromAuthHeaderAsBearerToken
+    jwtFromRequest : ExtractJWT.fromAuthHeaderAsBearerToken()
 }
 
 //JWT
 passport.use(
     new JwtStrategy(JWToption , async(jwt_payload, done) => {
+        console.log('JwtStrategy')
         try {
             const user = await User.findOne({where:{name:jwt_payload.name}})
             if(!user) throw new Error("使用者不存在")
-
             done(null,user)
         } catch (error) {
             done(error , false)
