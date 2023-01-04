@@ -3,10 +3,9 @@ const jwtToken = require("jsonwebtoken")
 const {AttendanceSheet,User} = require("../models")
 const Sequelize = require("sequelize")
 const op = Sequelize.Op
-const utc = require('dayjs/plugin/utc')
 const dayjs = require('dayjs')
-dayjs.extend(utc)
 
+const NodeGeocoder = require('node-geocoder');
 module.exports ={
 
     LogIn: async(req,res,next) =>{
@@ -14,17 +13,33 @@ module.exports ={
         try {
             delete user.password
             const token = jwtToken.sign(user,process.env.JWT_SECRET,{expiresIn:'30d'})
-            const AtWork = await AttendanceSheet.findOne({where:{jobId:user.id},attributes:['checkIn']})
             res.json({
                 status:"success",
                 token:token,
-                user:user,
-                AtWork:AtWork.checkIn?true:false
             })
         } catch (error) {
+            console.log(error)
            next(error)
         }
     },
+    getUser: async(req,res,next) => {
+        try {
+            const user = req.user.toJSON()
+            const userData = await User.findOne(
+                {where:{id:user.id},
+                raw:true,
+                nest:true,
+                include:[{model:AttendanceSheet}]})
+            console.log(userData)
+            res.json({
+                status:"success",
+                user:userData,
+                AtWork:userData.AttendanceSheets.checkIn?true:false
+            })
+        } catch (error) {
+            next(error)
+        }      
+    } ,
     Attendance: async(req,res,next) =>{
         const {jobId,time} = req.body
         try {
@@ -50,4 +65,23 @@ module.exports ={
             next(error)
         }
     },
+    getCurrentPosition: async(req,res,next) =>{
+        const options = {
+            provider: 'google',
+          
+            // Optional depending on the providers
+            apiKey: 'AIzaSyDLcMD8ShXFEC3LBhVKhgG160EgeqtQW5k', // for Mapquest, OpenCage, Google Premier
+            formatter: null // 'gpx', 'string', ...
+          };
+          
+          const geocoder = NodeGeocoder(options);
+       
+          // Using callback
+          try {
+            const respense = await geocoder.geocode('台北市內湖區民權東路六段90巷16弄14號1樓');
+            res.json({respense})
+          } catch (error) {
+            next(error)
+          }    
+    }
     }
