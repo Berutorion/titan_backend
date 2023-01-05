@@ -23,6 +23,11 @@ app.listen(port , () =>{
     console.log('Server is working')
 })
 
-app.get("/" , (req,res) =>{
-    res.send("Wellcome,Server is working")
+app.get('/', (req, res) => res.send('Hello welcome to Attendance-server'))
+app.use('*', (req, res) => {
+  // return an error
+  res.status(404).json({
+    status: 'error',
+    message: '這是個未被定義的路由'
+  })
 })
