@@ -1,7 +1,7 @@
 const router = require("express").Router()
-const dayjs = require("dayjs")
-// require('dayjs/locale/zh-tw')
-// dayjs.locale('zh-cn') // 当前实例使用
+const {QRAuth,AttendanceSheet} = require("../models")
+const {timeFormat,getToday} = require("../helper/dateTime")
+const dayjs = require('dayjs')
 
 router.get('/' ,(req,res) =>{
     res.json({
@@ -9,9 +9,9 @@ router.get('/' ,(req,res) =>{
     })
 })
 
-router.get('/time' , (req,res,next) =>{
-
-    const now = dayjs().format('YYYY/MM/DD HH:mm')
-    res.json({status:"seccess" , message:now})
+router.get('/time' , async(req,res,next) =>{
+    
+    const newDate = getToday("2023-01-05T17:47:06+08:00")
+    res.json({status:"seccess" , message:newDate})
 })
 module.exports = router

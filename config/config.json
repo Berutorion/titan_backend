@@ -4,7 +4,8 @@
     "password": "26604079",
     "database": "Attendance",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "timezone":"+08:00"
   },
   "test": {
     "username": "root",
@@ -14,10 +15,11 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "username": "admin",
+    "password": "",
+    "database": "Attendance",
+    "host": "",
+    "dialect": "mysql",
+    "timezone":"+08:00" 
   }
 }

@@ -2,10 +2,9 @@
 const jwtToken = require("jsonwebtoken")
 const {AttendanceSheet,User} = require("../models")
 const Sequelize = require("sequelize")
-const op = Sequelize.Op
-const dayjs = require('dayjs')
-
-const NodeGeocoder = require('node-geocoder');
+const Op = Sequelize.Op
+const {getToday} = require('../helper/dateTime')
+const dayjs = require("dayjs")
 module.exports ={
 
     LogIn: async(req,res,next) =>{
@@ -43,11 +42,14 @@ module.exports ={
     Attendance: async(req,res,next) =>{
         const {jobId,time} = req.body
         try {
+            //獲取今天的時間範圍
+            const today =  getToday(time)
+            //如果 AtWork存在表示今天打過卡
             const AtWork = await AttendanceSheet.findOne({
                 where:{
                     jobId,
                     checkIn:{
-                    [op.gte]:dayjs(time).format('YYYY-MM-DD')
+                    [Op.between]:[today.startTime,today.endTime]
             }}})
             if(AtWork){
               await AtWork.update({
@@ -60,28 +62,9 @@ module.exports ={
                     checkIn:time,
                     status:"error"})
             }
-         res.json({status:"seccess"})
+         res.json({status:"success"})
         } catch (error) {
             next(error)
         }
     },
-    getCurrentPosition: async(req,res,next) =>{
-        const options = {
-            provider: 'google',
-          
-            // Optional depending on the providers
-            apiKey: 'AIzaSyDLcMD8ShXFEC3LBhVKhgG160EgeqtQW5k', // for Mapquest, OpenCage, Google Premier
-            formatter: null // 'gpx', 'string', ...
-          };
-          
-          const geocoder = NodeGeocoder(options);
-       
-          // Using callback
-          try {
-            const respense = await geocoder.geocode('台北市內湖區民權東路六段90巷16弄14號1樓');
-            res.json({respense})
-          } catch (error) {
-            next(error)
-          }    
-    }
     }

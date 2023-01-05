@@ -23,6 +23,6 @@ app.listen(port , () =>{
     console.log('Server is working')
 })
 
-// app.get("/" , (req,res) =>{
-//     res.send("hello word")
-// })
+app.get("/" , (req,res) =>{
+    res.send("Wellcome,Server is working")
+})
