@@ -4,6 +4,7 @@ const UserController = require("../controller/UserController")
 const {QRcodeAuthenticated} = require("../middleware/auth")
 
 router.get('/' , UserController.getUser)
+router.patch('/',UserController.updateUser)
 router.post('/check' ,UserController.Attendance )
 router.post('/qrcodeCheck',QRcodeAuthenticated,UserController.Attendance)
 

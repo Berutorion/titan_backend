@@ -5,6 +5,7 @@ const Sequelize = require("sequelize")
 const Op = Sequelize.Op
 const {getToday} = require('../helper/dateTime')
 const dayjs = require("dayjs")
+const bcrypt = require("bcryptjs")
 module.exports ={
 
     LogIn: async(req,res,next) =>{
@@ -15,6 +16,7 @@ module.exports ={
             res.json({
                 status:"success",
                 token:token,
+                role:user.role
             })
         } catch (error) {
             console.log(error)
@@ -39,6 +41,18 @@ module.exports ={
             next(error)
         }      
     } ,
+    updateUser : async(req ,res ,next) =>{
+        try {
+            const {password , checkPassword} = req.body
+            const user = req.user
+            if(password !== checkPassword) throw new Error("兩次密碼輸入不同")
+            await User.update({password:await bcrypt.hash(password,10)},{where:{id:user.id}})
+            res.json({status:"success" , message:"密碼更改成功"})
+        } catch (error) {
+            next(error)
+        }
+
+    },
     Attendance: async(req,res,next) =>{
         const {jobId,time} = req.body
         try {
