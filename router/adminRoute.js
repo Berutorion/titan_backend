@@ -9,5 +9,6 @@ next()})
 
 router.post('/newUser' ,adminController.addNewUser)
 router.get('/qrcode' , adminController.getQRcode)
+router.patch('/userStatus',adminController.updateUserStatus)
 
 module.exports = router

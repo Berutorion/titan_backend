@@ -45,5 +45,16 @@ module.exports ={
        } catch (error) {
         next(error)
        }
+    },
+    updateUserStatus: async(req,res,next) =>{
+        const {lock , status,userId} = req.body
+        try {
+            if(lock !== null){
+                await User.update({lock,errorTimes:5},{where:{id:userId}})
+                return res.json({status:"success",message:"解鎖成功"})
+            }
+        } catch (error) {
+            next(error)
+        }
     }
 }

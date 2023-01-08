@@ -19,7 +19,6 @@ module.exports ={
                 role:user.role
             })
         } catch (error) {
-            console.log(error)
            next(error)
         }
     },

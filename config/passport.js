@@ -16,9 +16,19 @@ try {
     console.log("Local")
     const user = await User.findOne({where:{name}})
     if(!user) throw new Error("使用者不存在")
-    const passwordMatch = bcrypt.compare(password , user.password)
-    if(!passwordMatch) throw new Error("密碼錯誤")
-
+    if(user.lock) throw new Error("帳號已被鎖定，請尋找管理員解決")
+    const passwordMatch = await bcrypt.compare(password , user.password)
+    if(!passwordMatch){
+        await user.update({errorTimes:user.errorTimes-1})
+        await user.save()
+        if(user.errorTimes !== 0){
+            throw new Error(`密碼錯誤,還剩${user.errorTimes}次機會`)
+        }else{
+            await user.update({lock:true})
+            await user.save()
+            throw new Error("帳號已被鎖定，請尋找管理員解決")
+        }   
+    } 
     done(null,user)
 } catch (error) {
     done(error,false)
