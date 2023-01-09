@@ -3,7 +3,7 @@ const jwtToken = require("jsonwebtoken")
 const {AttendanceSheet,User} = require("../models")
 const Sequelize = require("sequelize")
 const Op = Sequelize.Op
-const {getToday,timeFormat} = require('../helper/dateTime')
+const {getToday,dayFormat,timeFormat} = require('../helper/dateTime')
 const dayjs = require("dayjs")
 const bcrypt = require("bcryptjs")
 module.exports ={
@@ -25,7 +25,7 @@ module.exports ={
     getUser: async(req,res,next) => {
         try {
             const user = req.user.toJSON()
-            const today =  getToday(timeFormat())
+            const today =  getToday(dayFormat())
             const userData = await User.findOne(
                 {where:{id:user.id},
                 raw:true,
@@ -40,8 +40,8 @@ module.exports ={
             res.status(200).json({
                 userData:{
                     ...userData,
-                    checkIn:attendanceSheet?.checkIn?dayjs(attendanceSheet.checkIn).format("HH:mm:ss"):"--:--",
-                    checkOut:attendanceSheet?.checkOut?dayjs(attendanceSheet.checkOut).format("HH:mm:ss"):"--:--",
+                    checkIn:attendanceSheet?.checkIn?timeFormat(attendanceSheet.checkIn):"--:--",
+                    checkOut:attendanceSheet?.checkOut?timeFormat(attendanceSheet.checkOut):"--:--",
                     AtWork:attendanceSheet?.checkIn?true:false
                 }
             })

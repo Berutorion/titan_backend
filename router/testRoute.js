@@ -1,6 +1,6 @@
 const router = require("express").Router()
 const {QRAuth,AttendanceSheet} = require("../models")
-const {timeFormat,getToday} = require("../helper/dateTime")
+const {getToday} = require("../helper/dateTime")
 const dayjs = require('dayjs')
 
 router.get('/' ,(req,res) =>{

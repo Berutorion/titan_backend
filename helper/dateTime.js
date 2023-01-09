@@ -7,8 +7,11 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 
 module.exports = {
-    timeFormat: (time) =>{
+    dayFormat: (time) =>{
         return dayjs(time).tz('Asia/Taipei').format()
+    },
+    timeFormat: (time) =>{
+        return dayjs(time).tz('Asia/Taipei').format("HH:mm:ss")
     },
     getToday : (time) =>{
         const now = dayjs(time)
