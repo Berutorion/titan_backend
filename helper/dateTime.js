@@ -24,7 +24,7 @@ module.exports = {
             startTime = now.hour(05).minute(0).second(0).subtract(1,day)
             endTime = now.hour(04).minute(59).second(59)
         }else{
-            console.log("error")
+           throw new Error("無法獲取正確時間")
         }
 
             return {startTime:startTime.tz('Asia/Taipei').format() ,

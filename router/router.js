@@ -7,11 +7,6 @@ const {userRoute,adminRoute,testRoute} = require('../router')
 const UserController = require("../controller/UserController")
 const passport = require("passport")
 
-
-router.use((req,res,next) =>{
-    console.log("here is router") 
-next()})
-
 router.post("/login" , passport.authenticate("local" , {session:false}),
 UserController.LogIn)
 

@@ -13,7 +13,6 @@ passport.use(
     new LocalStrategy({usernameField:"name" , passwordField:"password"},
         async(name,password,done)=>{
 try {
-    console.log("Local")
     const user = await User.findOne({where:{name}})
     if(!user) throw new Error("使用者不存在")
     if(user.lock) throw new Error("帳號已被鎖定，請尋找管理員解決")
@@ -46,7 +45,6 @@ const JWToption = {
 //JWT
 passport.use(
     new JwtStrategy(JWToption , async(jwt_payload, done) => {
-        console.log('JwtStrategy')
         try {
             const user = await User.findOne({where:{name:jwt_payload.name}})
             if(!user) throw new Error("使用者不存在")

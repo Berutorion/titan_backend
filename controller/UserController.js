@@ -3,7 +3,7 @@ const jwtToken = require("jsonwebtoken")
 const {AttendanceSheet,User} = require("../models")
 const Sequelize = require("sequelize")
 const Op = Sequelize.Op
-const {getToday} = require('../helper/dateTime')
+const {getToday,timeFormat} = require('../helper/dateTime')
 const dayjs = require("dayjs")
 const bcrypt = require("bcryptjs")
 module.exports ={
@@ -13,8 +13,8 @@ module.exports ={
         try {
             delete user.password
             const token = jwtToken.sign(user,process.env.JWT_SECRET,{expiresIn:'30d'})
-            res.json({
-                status:"success",
+            res.status(200).json({
+                message:"登入成功",
                 token:token,
                 role:user.role
             })
@@ -25,16 +25,25 @@ module.exports ={
     getUser: async(req,res,next) => {
         try {
             const user = req.user.toJSON()
+            const today =  getToday(timeFormat())
             const userData = await User.findOne(
                 {where:{id:user.id},
                 raw:true,
-                nest:true,
-                include:[{model:AttendanceSheet}]})
-            console.log(userData)
-            res.json({
-                status:"success",
-                user:userData,
-                AtWork:userData.AttendanceSheets.checkIn?true:false
+                attributes:["account","email","name","role","id"],
+                })
+            const attendanceSheet = await AttendanceSheet.findOne(
+                {raw:true,
+                 where:{jobId:userData.id,checkIn:{[Op.between]:[today.startTime,today.endTime]}},
+                 attributes:["checkIn","checkOut","status"]
+                }
+            )     
+            res.status(200).json({
+                userData:{
+                    ...userData,
+                    checkIn:attendanceSheet?.checkIn?dayjs(attendanceSheet.checkIn).format("HH:mm:ss"):"--:--",
+                    checkOut:attendanceSheet?.checkOut?dayjs(attendanceSheet.checkOut).format("HH:mm:ss"):"--:--",
+                    AtWork:attendanceSheet?.checkIn?true:false
+                }
             })
         } catch (error) {
             next(error)
@@ -46,7 +55,7 @@ module.exports ={
             const user = req.user
             if(password !== checkPassword) throw new Error("兩次密碼輸入不同")
             await User.update({password:await bcrypt.hash(password,10)},{where:{id:user.id}})
-            res.json({status:"success" , message:"密碼更改成功"})
+            res.status(200).json({ message:"密碼更改成功"})
         } catch (error) {
             next(error)
         }
@@ -75,7 +84,7 @@ module.exports ={
                     checkIn:time,
                     status:"error"})
             }
-         res.json({status:"success"})
+         res.status(200).json({message:"打卡成功"})
         } catch (error) {
             next(error)
         }

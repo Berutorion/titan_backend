@@ -6,7 +6,7 @@ const authGenerate = require("../helper/authGenerate")
 const {getToday} = require('../helper/dateTime')
 
 module.exports ={
-    addNewUser : async(req,res) =>{
+    addNewUser : async(req,res,next) =>{
         const userData = req.body    
         try {
            const user = await User.create({
@@ -23,7 +23,7 @@ module.exports ={
             } 
             
         } catch (error) {
-            console.log(error)
+           next(error)
         }
     },
     getQRcode: async(req,res,next) =>{
