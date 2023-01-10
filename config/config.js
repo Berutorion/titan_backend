@@ -2,12 +2,12 @@ require("dotenv").config()
 module.exports = 
 {
   development: {
-    "username": "root",
-    "password": "26604079",
-    "database": "Attendance",
-    "host": "127.0.0.1",
-    "dialect": "mysql",
-    "timezone":"+08:00"
+    "username": process.env.DEV_DB_USERNAME,
+    "password": process.env.DEV_DB_PASSWORD,
+    "database": process.env.DEV_DB_DATABASE,
+    "host": process.env.DEV_DB_HOST,
+    "dialect":process.env.DEV_DB_DIALECT,
+    "timezone":process.env.DEV_DB_TIMEZONE 
   },
   test: {
     "username": "root",
@@ -17,11 +17,11 @@ module.exports =
     "dialect": "mysql"
   },
   production: {
-    "username": process.env.DB_USERNAME,
-    "password": process.env.DB_PASSWORD,
-    "database": process.env.DB_DATABASE,
-    "host": process.env.DB_HOST,
-    "dialect":process.env.DB_DIALECT,
-    "timezone":process.env.DB_TIMEZONE 
+    "username": process.env.PRO_DB_USERNAME,
+    "password": process.env.PRO_DB_PASSWORD,
+    "database": process.env.PRO_DB_DATABASE,
+    "host": process.env.PRO_DB_HOST,
+    "dialect":process.env.PRO_DB_DIALECT,
+    "timezone":process.env.PRO_DB_TIMEZONE 
   }
 } 

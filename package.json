@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "production": "set NODE_ENV=production&& nodemon app"
+    "dbinit":"npx sequelize db:create && npx sequelize db:migrate && npx sequelize db:seed:all ",
+    "dbundo":"npx sequelize-cli db:migrate:undo",
+    "dev": "nodemon app.js"
   },
   "keywords": [],
   "author": "",
