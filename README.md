@@ -27,7 +27,7 @@ npm install
 
 ### 環境變數設定
 
-請在終端機輸入 `cp .env.example .env` 來複製 .env.example 檔案，並依據 `.env` 內容調整相關欄位。
+ 複製 .env.example 檔案，並改名為.env，依據 `.env` 內容調整相關欄位。
 
 ### 資料庫初始化
 
