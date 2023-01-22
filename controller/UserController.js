@@ -25,7 +25,8 @@ module.exports ={
     getUser: async(req,res,next) => {
         try {
             const user = req.user.toJSON()
-            const today =  getToday(dayFormat())
+            const time = req.query.time
+            const today =  getToday(time)
             const userData = await User.findOne(
                 {where:{id:user.id},
                 raw:true,
@@ -42,7 +43,8 @@ module.exports ={
                     ...userData,
                     checkIn:attendanceSheet?.checkIn?timeFormat(attendanceSheet.checkIn):"--:--",
                     checkOut:attendanceSheet?.checkOut?timeFormat(attendanceSheet.checkOut):"--:--",
-                    AtWork:attendanceSheet?.checkIn?true:false
+                    AtWork:attendanceSheet?.checkIn?true:false,
+                    status:attendanceSheet?.status
                 }
             })
         } catch (error) {
@@ -75,7 +77,7 @@ module.exports ={
             }}})
             if(AtWork){
               await AtWork.update({
-                checkOut:time,
+                checkOut:dayFormat(time),
                 //下班時間-上班時間<8?曠班:正常
                 status:dayjs(time).diff(dayjs(AtWork.checkIn),'hour')< 8 ?"Inactive":"active"})
             }else{
